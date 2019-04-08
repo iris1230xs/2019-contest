@@ -1,33 +1,18 @@
 class GameObject {
-    constructor(id, x = 0, y = 0) {
-        this.x = x;
-        this.y = y;
-        this.width = 50;
-        this.height = 50;
+    constructor(id, col = 0, row = 0, width = gridWidth, height = gridHeight) {
+        this.col = col;
+        this.row = row;
+        this.width = width;
+        this.height = height;
         this.image = document.querySelector('img#' + id);
     }
 
-    moveUp() {
-        const y = this.y - this.height;
-        if (0 <= y) this.y = y;
-    }
-
-    moveDown() {
-        const y = this.y + this.height;
-        if (y + this.height <= sokoban.height) this.y = y;
-    }
-
-    moveLeft() {
-        const x = this.x - this.width;
-        if (0 <= x) this.x = x;
-    }
-
-    moveRight() {
-        const x = this.x + this.width;
-        if (x + this.width <= sokoban.width) this.x = x;
+    move(drow, dcol) {
+        this.row += drow;
+        this.col += dcol;
     }
 
     draw() {
-        gameContext.drawImage(this.image, this.x, this.y, this.width, this.height);
+        gameContext.drawImage(this.image, this.col * gridWidth, this.row * gridHeight, this.width, this.height);
     }
 }
