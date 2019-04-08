@@ -1,7 +1,5 @@
 class Game {
     constructor() {
-        this.canvas = document.querySelector('canvas#sokoban');
-        this.context = this.canvas.getContext('2d');
         this.keydowns = {};
         this.actions = {};
         this.objects = [];
@@ -13,11 +11,11 @@ class Game {
     }
 
     clear() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        gameContext.clearRect(0, 0, sokoban.width, sokoban.height);
     }
 
     draw() {
-        this.objects.forEach(obj => obj.draw(this.context));
+        this.objects.forEach(obj => obj.draw());
     }
 
     listen() {

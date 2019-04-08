@@ -1,10 +1,7 @@
 function main() {
     const game = new Game();
-    const box = new Box();
-    const player = new Box();
-    player.image = document.querySelector('img#player');
-    player.x = 100;
-    player.y = 100;
+    const box = new GameObject('box');
+    const player = new GameObject('player', 100, 100);
     game.objects.push(box);
     game.objects.push(player);
     game.registerAction('w', player.moveUp.bind(player));
