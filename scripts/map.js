@@ -50,6 +50,35 @@ class GameMap {
         this.move(object, 0, 1);
     }
 
+    push(object, drow, dcol) {
+        const nrow = object.row + drow;
+        const ncol = object.col + dcol;
+        if (nrow < 0 || rowCnt <= nrow || ncol < 0 || colCnt <= ncol) return false;
+        const grid = this.grids[nrow][ncol];
+        if (grid[0] === Background.WALL) return false;
+        if (grid[1] !== null && !this.move(grid[1], drow, dcol)) return false;
+        this.grids[object.row][object.col][1] = null;
+        grid[1] = object;
+        object.move(drow, dcol);
+        return true;
+    }
+
+    pushUp(object) {
+        this.push(object, -1, 0);
+    }
+
+    pushDown(object) {
+        this.push(object, 1, 0);
+    }
+
+    pushLeft(object) {
+        this.push(object, 0, -1);
+    }
+
+    pushRight(object) {
+        this.push(object, 0, 1);
+    }
+
     draw() {
         for (let i = 0; i < this.grids.length; i++) {
             const row = this.grids[i];
@@ -61,8 +90,10 @@ class GameMap {
     }
 
     drawGrid(grid, x, y) {
+        // Draw background first
         if (grid[0] === null) gameContext.fillRect(x, y, gridWidth, gridHeight);
         else gameContext.drawImage(grid[0], x, y, gridWidth, gridHeight);
+        // Draw player or box
         if (grid[1] !== null) grid[1].draw();
     }
 }
