@@ -15,10 +15,26 @@ class GameMap {
                 this.grids[i][j] = [Background.BLANK, null]
             }
         }
+        this.goals = [];
+        this.boxCnt = 0;
     }
 
-    put(object) {
-        this.grids[object.row][object.col][1] = object;
+    put(object, row = object.row, col = object.col) {
+        const grid = this.grids[row][col];
+        if (grid[1] !== null) return false;
+        grid[1] = object;
+        object.row = row;
+        object.col = col;
+        if (object.type === 'box') this.boxCnt++;
+        return true;
+    }
+
+    setGoal(row, col) {
+        const grid = this.grids[row][col];
+        if (grid[0] === Background.GOAL) return false;
+        grid[0] = Background.GOAL;
+        this.goals.push([row, col]);
+        return true;
     }
 
     move(object, drow, dcol) {
@@ -35,19 +51,19 @@ class GameMap {
     }
 
     moveUp(object) {
-        this.move(object, -1, 0);
+        return this.move(object, -1, 0);
     }
 
     moveDown(object) {
-        this.move(object, 1, 0);
+        return this.move(object, 1, 0);
     }
 
     moveLeft(object) {
-        this.move(object, 0, -1);
+        return this.move(object, 0, -1);
     }
 
     moveRight(object) {
-        this.move(object, 0, 1);
+        return this.move(object, 0, 1);
     }
 
     push(object, drow, dcol) {
@@ -64,19 +80,33 @@ class GameMap {
     }
 
     pushUp(object) {
-        this.push(object, -1, 0);
+        return this.push(object, -1, 0);
     }
 
     pushDown(object) {
-        this.push(object, 1, 0);
+        return this.push(object, 1, 0);
     }
 
     pushLeft(object) {
-        this.push(object, 0, -1);
+        return this.push(object, 0, -1);
     }
 
     pushRight(object) {
-        this.push(object, 0, 1);
+        return this.push(object, 0, 1);
+    }
+
+    isWin() {
+        if (this.boxCnt < this.goals.length) return false;
+        for (const goal of this.goals) {
+            const grid = this.grids[goal[0]][goal[1]];
+            if (grid[1] === null || grid[1].type !== 'box') return false;
+        }
+        return true;
+    }
+
+    isLose() {
+        if (this.boxCnt < this.goals.length) return true;
+        return false;
     }
 
     draw() {

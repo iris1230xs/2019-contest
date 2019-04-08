@@ -1,10 +1,11 @@
 class GameObject {
-    constructor(id, col = 0, row = 0, width = gridWidth, height = gridHeight) {
+    constructor(type, col = 0, row = 0, width = gridWidth, height = gridHeight) {
+        this.type = type;
         this.col = col;
         this.row = row;
         this.width = width;
         this.height = height;
-        this.image = document.querySelector('img#' + id);
+        this.image = document.querySelector('img#' + type);
     }
 
     move(drow, dcol) {

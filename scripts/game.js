@@ -2,12 +2,13 @@ class Game {
     constructor() {
         this.keydowns = {};
         this.actions = {};
-        this.objects = [];
+        this.map = new GameMap();
+        this.intervalId = null;
     }
 
     start() {
         // Should bind context here, otherwise the function'll lose context!
-        const intervalId = setInterval(this.doLoop.bind(this), 1000 / 10);
+        this.intervalId = setInterval(this.doLoop.bind(this), 1000 / 10);
     }
 
     clear() {
@@ -15,7 +16,17 @@ class Game {
     }
 
     draw() {
-        this.objects.forEach(obj => obj.draw());
+        this.map.draw();
+    }
+
+    checkState() {
+        if (this.map.isLose()) {
+            console.error('You lose!');
+            clearInterval(this.intervalId);
+        } else if (this.map.isWin()) {
+            console.log('You win!');
+            clearInterval(this.intervalId);
+        }
     }
 
     listen() {
@@ -30,6 +41,7 @@ class Game {
     }
 
     doLoop() {
+        this.checkState();
         this.doActions();
         this.clear();
         this.draw();
