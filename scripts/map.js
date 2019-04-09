@@ -9,6 +9,14 @@ const Background = Object.freeze({
 });
 
 /**
+ * 每层的编号
+ */
+const Layer = Object.freeze({
+    BG: 0,
+    OBJ: 1
+});
+
+/**
  * 游戏地图类，负责物体位置的管理、碰撞检测和游戏状态的检测
  * @property {Array} grids 负责地图所有格子状态的储存
  * @property {Array} goals 储存所有终点的坐标，以便检查胜利状态
@@ -60,8 +68,8 @@ class GameMap {
      */
     putObject(object, row = object.row, col = object.col) {
         const grid = this.grids[row][col];
-        if (grid[1] !== null) return false;
-        grid[1] = object;
+        if (grid[Layer.OBJ] !== null) return false;
+        grid[Layer.OBJ] = object;
         object.row = row;
         object.col = col;
         if (object.type === 'box') this.boxCnt++;
@@ -99,8 +107,8 @@ class GameMap {
      */
     setWall(row, col) {
         const grid = this.grids[row][col];
-        if (grid[0] === Background.WALL) return false;
-        grid[0] = Background.WALL;
+        if (grid[Layer.BG] === Background.WALL) return false;
+        grid[Layer.BG] = Background.WALL;
         this.walls[hashCode(row, col)] = true;
         return true;
     }
@@ -113,9 +121,9 @@ class GameMap {
      */
     setGoal(row, col) {
         const grid = this.grids[row][col];
-        if (grid[0] === Background.GOAL) return false;
-        grid[0] = Background.GOAL;
-        this.goals.push([row, col]);
+        if (grid[Layer.BG] === Background.GOAL) return false;
+        grid[Layer.BG] = Background.GOAL;
+        this.goals.push({row: row, col: col});
         return true;
     }
 
@@ -127,8 +135,8 @@ class GameMap {
      */
     setFloor(row, col) {
         const grid = this.grids[row][col];
-        if (grid[0] === Background.FLOOR) return false;
-        grid[0] = Background.FLOOR;
+        if (grid[Layer.BG] === Background.FLOOR) return false;
+        grid[Layer.BG] = Background.FLOOR;
         return true;
     }
 
@@ -162,12 +170,12 @@ class GameMap {
         const ncol = object.col + dcol;
         if (this.walls[hashCode(nrow, ncol)] === true) return false;
         const grid = this.grids[nrow][ncol];
-        if (grid[1] !== null) return false;
-        this.grids[object.row][object.col][1] = null;
-        grid[1] = object;
+        if (grid[Layer.OBJ] !== null) return false;
+        this.grids[object.row][object.col][Layer.OBJ] = null;
+        grid[Layer.OBJ] = object;
         object.move(drow, dcol);
         const isWall = this.checkUnmovable(object);
-        if (isWall && object.type === 'box' && grid[0] !== Background.GOAL) this.boxCnt--;
+        if (isWall && object.type === 'box' && grid[Layer.BG] !== Background.GOAL) this.boxCnt--;
         return true;
     }
 
@@ -219,9 +227,9 @@ class GameMap {
         const ncol = object.col + dcol;
         if (this.walls[hashCode(nrow, ncol)] === true) return false;
         const grid = this.grids[nrow][ncol];
-        if (grid[1] !== null && !this.move(grid[1], drow, dcol)) return false;
-        this.grids[object.row][object.col][1] = null;
-        grid[1] = object;
+        if (grid[Layer.OBJ] !== null && !this.move(grid[Layer.OBJ], drow, dcol)) return false;
+        this.grids[object.row][object.col][Layer.OBJ] = null;
+        grid[Layer.OBJ] = object;
         object.move(drow, dcol);
         return true;
     }
@@ -269,8 +277,8 @@ class GameMap {
     isWin() {
         if (this.boxCnt < this.goals.length) return false;
         for (const goal of this.goals) {
-            const grid = this.grids[goal[0]][goal[1]];
-            if (grid[1] === null || grid[1].type !== 'box') return false;
+            const grid = this.grids[goal.row][goal.col];
+            if (grid[Layer.OBJ] === null || grid[Layer.OBJ].type !== 'box') return false;
         }
         return true;
     }
@@ -305,15 +313,15 @@ class GameMap {
      */
     drawGrid(grid, x, y) {
         // Draw background first
-        if (grid[0] === null) gameContext.fillRect(x, y, gridWidth, gridHeight);
-        else gameContext.drawImage(grid[0], x, y, gridWidth, gridHeight);
+        if (grid[Layer.BG] === Background.BLANK) gameContext.fillRect(x, y, gridWidth, gridHeight);
+        else gameContext.drawImage(grid[Layer.BG], x, y, gridWidth, gridHeight);
         // Draw player or box
-        if (grid[1] !== null) {
-            grid[1].draw();
+        if (grid[Layer.OBJ] !== null) {
+            grid[Layer.OBJ].draw();
             // If reaches goal, cover the box with green mask
-            if (grid[1].type !== 'box' || grid[0] !== Background.GOAL) return;
+            if (grid[Layer.OBJ].type !== 'box' || grid[Layer.BG] !== Background.GOAL) return;
             gameContext.fillStyle = 'rgba(0, 200, 0, 0.5)';
-            gameContext.fillRect(x, y, grid[1].width, grid[1].height);
+            gameContext.fillRect(x, y, grid[Layer.OBJ].width, grid[Layer.OBJ].height);
             gameContext.fillStyle = 'black';
         }
     }
