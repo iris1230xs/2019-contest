@@ -4,13 +4,12 @@
 function main() {
     const game = new Game();
     const player = new GameObject('player');
-    game.registerAction('w', () => game.map.pushUp(player));
-    game.registerAction('a', () => game.map.pushLeft(player));
-    game.registerAction('s', () => game.map.pushDown(player));
-    game.registerAction('d', () => game.map.pushRight(player));
-    let level = levelMedium;
-    loadLevel(game.map, player, level);
-    game.listen();
+    game.registerKeyAction('w', () => game.map.pushUp(player));
+    game.registerKeyAction('a', () => game.map.pushLeft(player));
+    game.registerKeyAction('s', () => game.map.pushDown(player));
+    game.registerKeyAction('d', () => game.map.pushRight(player));
+    loadLevel(game.map, player, gameLevels[0]);
+    game.listenKeyEvent();
     game.start();
 }
 

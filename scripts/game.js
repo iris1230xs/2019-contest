@@ -1,5 +1,9 @@
 /**
  * 游戏类，控制一局游戏流程
+ * @property {Object} keydowns 有哪些按键按下
+ * @property {Object} actions 按键按下后的回调函数
+ * @property {GameMap} map 游戏地图
+ * @property {number} intervalId interval循环的辨识id
  */
 class Game {
     /**
@@ -9,7 +13,7 @@ class Game {
         this.keydowns = {};
         this.actions = {};
         this.map = new GameMap();
-        this.intervalId = null;
+        this.intervalId = -1;
     }
 
     /**
@@ -17,20 +21,20 @@ class Game {
      */
     start() {
         // Should bind context here, otherwise the function'll lose context!
-        this.intervalId = setInterval(this.doLoop.bind(this), 1000 / 10);
+        this.intervalId = setInterval(this.doLoopOnce.bind(this), 1000 / 10);
     }
 
     /**
      * 清除canvas中的内容
      */
-    clear() {
+    clearCanvas() {
         gameContext.clearRect(0, 0, sokoban.width, sokoban.height);
     }
 
     /**
      * 重绘整个地图
      */
-    draw() {
+    drawCanvas() {
         this.map.draw();
     }
 
@@ -50,7 +54,7 @@ class Game {
     /**
      * 监听键盘输入事件
      */
-    listen() {
+    listenKeyEvent() {
         window.addEventListener('keydown', event => this.keydowns[event.key] = true);
     }
 
@@ -67,11 +71,11 @@ class Game {
     /**
      * 执行一轮循环
      */
-    doLoop() {
+    doLoopOnce() {
         this.checkState();
         this.doActions();
-        this.clear();
-        this.draw();
+        this.clearCanvas();
+        this.drawCanvas();
     }
 
     /**
@@ -79,7 +83,7 @@ class Game {
      * @param {string} key 键位
      * @param {Function} action 回调函数
      */
-    registerAction(key, action) {
+    registerKeyAction(key, action) {
         this.actions[key] = action;
     }
 }

@@ -31,6 +31,7 @@ class GameMap {
      * 清空地图，回到初始状态
      */
     clear() {
+        // Fill whole map with blank
         for (let i = 0; i < this.grids.length; i++) {
             for (let j = 0; j < this.grids[i].length; j++) {
                 this.grids[i][j] = [Background.BLANK, null]
@@ -38,6 +39,7 @@ class GameMap {
         }
         this.goals = [];
         this.walls = {};
+        // Treat the edge of the map as a wall
         for (let i = 0; i < colCnt; i++) {
             this.walls[hashCode(-1, i)] = true
             this.walls[hashCode(rowCnt, i)] = true
@@ -56,7 +58,7 @@ class GameMap {
      * @param {number} col 列号
      * @returns {boolean} 是否放置成功
      */
-    put(object, row = object.row, col = object.col) {
+    putObject(object, row = object.row, col = object.col) {
         const grid = this.grids[row][col];
         if (grid[1] !== null) return false;
         grid[1] = object;
@@ -73,7 +75,7 @@ class GameMap {
      * @param {HTMLImageElement} val 背景值
      * @returns {boolean} 是否设置成功
      */
-    set(row, col, val) {
+    setBackground(row, col, val) {
         switch (val) {
             case Background.FLOOR:
                 this.setFloor(row, col);
@@ -306,6 +308,13 @@ class GameMap {
         if (grid[0] === null) gameContext.fillRect(x, y, gridWidth, gridHeight);
         else gameContext.drawImage(grid[0], x, y, gridWidth, gridHeight);
         // Draw player or box
-        if (grid[1] !== null) grid[1].draw();
+        if (grid[1] !== null) {
+            grid[1].draw();
+            // If reaches goal, cover the box with green mask
+            if (grid[1].type !== 'box' || grid[0] !== Background.GOAL) return;
+            gameContext.fillStyle = 'rgba(0, 200, 0, 0.5)';
+            gameContext.fillRect(x, y, grid[1].width, grid[1].height);
+            gameContext.fillStyle = 'black';
+        }
     }
 }
