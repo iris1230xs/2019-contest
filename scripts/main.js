@@ -1,3 +1,6 @@
+/**
+ * 主要流程
+ */
 function main() {
     const game = new Game();
     const player = new GameObject('player');

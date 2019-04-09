@@ -1,11 +1,17 @@
+/**
+ * layout数组中，每个数字的最低4bit与物体/背景类型的映射关系
+ */
 const intToMap = Object.freeze({
-    0: Background.BLANK,
+    0: Background.BLANK, // Means total empty
     1: Background.FLOOR,
     2: Background.WALL,
     4: Background.GOAL,
     8: 'box',
 });
 
+/**
+ * Hard关卡
+ */
 const levelHard = {
     layout: [
         [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -18,8 +24,8 @@ const levelHard = {
         [0, 0, 0, 2, 2, 2, 2, 2, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0]
     ],
-    initRow: 3,
-    initCol: 2
+    initRow: 3, // The init row number of the player
+    initCol: 2 // Init col number
 };
 
 /**
@@ -33,8 +39,9 @@ function loadLevel(gameMap, level) {
         const row = level.layout[i];
         for (let j = 0; j < row.length; j++) {
             const col = row[j];
+            // The lower 3 bit is the type of background
             gameMap.set(i, j, intToMap[col & 0x7]);
-            if (8 <= col) {
+            if (8 <= col) { // Box exist
                 const box = new GameObject('box');
                 gameMap.put(box, i, j);
             }

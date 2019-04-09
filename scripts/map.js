@@ -1,3 +1,6 @@
+/**
+ * 背景类型和相应的HTMLImgElement之间的映射关系
+ */
 const Background = Object.freeze({
     WALL: document.querySelector('img#wall'),
     GOAL: document.querySelector('img#goal'),
@@ -6,7 +9,11 @@ const Background = Object.freeze({
 });
 
 /**
- * 游戏地图类，分背景层和物体层，负责物体位置的管理、碰撞检测和游戏状态的检测
+ * 游戏地图类，负责物体位置的管理、碰撞检测和游戏状态的检测
+ * @property {Array} grids 负责地图所有格子状态的储存
+ * @property {Array} goals 储存所有终点的坐标，以便检查胜利状态
+ * @property {Object} walls 储存所有无法移动的格子的坐标，以便碰撞和状态的检测
+ * @property {number} boxCnt 剩余仍然可以移动的箱子数量
  */
 class GameMap {
     /**
