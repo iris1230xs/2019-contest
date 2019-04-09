@@ -22,6 +22,11 @@ const levelHard = {
     initCol: 2
 };
 
+/**
+ * 将指定关卡加载进游戏地图
+ * @param {GameMap} gameMap 游戏地图
+ * @param {Object} level 关卡
+ */
 function loadLevel(gameMap, level) {
     gameMap.clear();
     for (let i = 0; i < level.layout.length; i++) {
