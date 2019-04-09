@@ -8,8 +8,8 @@ function main() {
     game.registerAction('a', () => game.map.pushLeft(player));
     game.registerAction('s', () => game.map.pushDown(player));
     game.registerAction('d', () => game.map.pushRight(player));
-    loadLevel(game.map, levelHard);
-    game.map.put(player, levelHard.initRow, levelHard.initRow);
+    let level = levelMedium;
+    loadLevel(game.map, player, level);
     game.listen();
     game.start();
 }

@@ -165,7 +165,7 @@ class GameMap {
         grid[1] = object;
         object.move(drow, dcol);
         const isWall = this.checkUnmovable(object);
-        if (isWall && object.type === 'box') this.boxCnt--;
+        if (isWall && object.type === 'box' && grid[0] !== Background.GOAL) this.boxCnt--;
         return true;
     }
 
