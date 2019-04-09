@@ -2,8 +2,10 @@
  * 游戏类，控制一局游戏流程
  * @property {Object} keydowns 有哪些按键按下
  * @property {Object} actions 按键按下后的回调函数
+ * @property {GameObject} player 玩家
  * @property {GameMap} map 游戏地图
  * @property {number} intervalId interval循环的辨识id
+ * @property {number} levelId 当前关卡编号
  */
 class Game {
     /**
@@ -12,8 +14,55 @@ class Game {
     constructor() {
         this.keydowns = {};
         this.actions = {};
+        this.player = null;
         this.map = new GameMap();
         this.intervalId = -1;
+        this.levelId = -1;
+    }
+
+    /**
+     * 设置关卡编号
+     * @param {number} id 关卡编号
+     */
+    setLevel(id) {
+        this.levelId = id % gameLevels.length;
+        if (this.levelId < 0)
+            this.levelId = (this.levelId + gameLevels.length) % gameLevels.length;
+    }
+
+    /**
+     * 设置玩家
+     * @param {GameObject} player 玩家
+     */
+    setPlayer(player) {
+        this.player = player;
+    }
+
+    /**
+     * 加载关卡
+     * @returns {boolean} 是否加载成功
+     */
+    loadLevel() {
+        if (this.player == null || this.levelId < 0) return false;
+        this.map.clear();
+        const level = gameLevels[this.levelId];
+        const rowPad = Math.floor((rowCnt - level.layout.length) / 2);
+        const colPad = Math.floor((colCnt - level.layout[0].length) / 2);
+        if (rowPad < 0 || colPad < 0) return false;
+        for (let i = 0; i < level.layout.length; i++) {
+            const row = level.layout[i];
+            for (let j = 0; j < row.length; j++) {
+                const col = row[j];
+                // The bits under the mask is the type of background
+                this.map.setBackground(i + rowPad, j + colPad, intToMap[col & layoutMask]);
+                if (layoutMask < col) { // Box exist
+                    const box = new GameObject('box');
+                    this.map.putObject(box, i + rowPad, j + colPad);
+                }
+            }
+        }
+        this.map.putObject(this.player, level.initRow + rowPad, level.initCol + colPad);
+        return true;
     }
 
     /**
@@ -22,6 +71,15 @@ class Game {
     start() {
         // Should bind context here, otherwise the function'll lose context!
         this.intervalId = setInterval(this.doLoopOnce.bind(this), 1000 / 10);
+    }
+
+    /**
+     * 重新开始一局游戏
+     */
+    restart() {
+        clearInterval(this.intervalId);
+        this.loadLevel();
+        this.start();
     }
 
     /**
@@ -45,9 +103,11 @@ class Game {
         if (this.map.isLose()) {
             console.error('You lose!');
             clearInterval(this.intervalId);
+            this.intervalId = setInterval(this.doActions.bind(this), 1000 / 10);
         } else if (this.map.isWin()) {
             console.log('You win!');
             clearInterval(this.intervalId);
+            this.intervalId = setInterval(this.doActions.bind(this), 1000 / 10);
         }
     }
 

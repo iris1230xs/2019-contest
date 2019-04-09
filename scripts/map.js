@@ -316,13 +316,12 @@ class GameMap {
         if (grid[Layer.BG] === Background.BLANK) gameContext.fillRect(x, y, gridWidth, gridHeight);
         else gameContext.drawImage(grid[Layer.BG], x, y, gridWidth, gridHeight);
         // Draw player or box
-        if (grid[Layer.OBJ] !== null) {
-            grid[Layer.OBJ].draw();
-            // If reaches goal, cover the box with green mask
-            if (grid[Layer.OBJ].type !== 'box' || grid[Layer.BG] !== Background.GOAL) return;
-            gameContext.fillStyle = 'rgba(0, 200, 0, 0.5)';
-            gameContext.fillRect(x, y, grid[Layer.OBJ].width, grid[Layer.OBJ].height);
-            gameContext.fillStyle = 'black';
-        }
+        if (grid[Layer.OBJ] === null) return;
+        grid[Layer.OBJ].draw();
+        // If reaches goal, cover the box with green mask
+        if (grid[Layer.OBJ].type !== 'box' || grid[Layer.BG] !== Background.GOAL) return;
+        gameContext.fillStyle = 'rgba(0, 200, 0, 0.5)';
+        gameContext.fillRect(x, y, grid[Layer.OBJ].width, grid[Layer.OBJ].height);
+        gameContext.fillStyle = 'black';
     }
 }

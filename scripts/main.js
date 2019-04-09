@@ -8,7 +8,18 @@ function main() {
     game.registerKeyAction('a', () => game.map.pushLeft(player));
     game.registerKeyAction('s', () => game.map.pushDown(player));
     game.registerKeyAction('d', () => game.map.pushRight(player));
-    loadLevel(game.map, player, gameLevels[0]);
+    game.setPlayer(player);
+    game.setLevel(0);
+    game.loadLevel();
+    game.registerKeyAction('r', () => game.restart());
+    game.registerKeyAction('=', () => {
+        game.setLevel(game.levelId + 1);
+        game.restart();
+    })
+    game.registerKeyAction('-', () => {
+        game.setLevel(game.levelId - 1);
+        game.restart();
+    })
     game.listenKeyEvent();
     game.start();
 }
