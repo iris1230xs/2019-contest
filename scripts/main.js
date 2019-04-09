@@ -12,14 +12,14 @@ function main() {
     game.setLevel(0);
     game.loadLevel();
     game.registerKeyAction('r', () => game.restart());
-    game.registerKeyAction('=', () => {
-        game.setLevel(game.levelId + 1);
-        game.restart();
-    })
+    game.registerKeyAction('=', () => game.nextLevel());
     game.registerKeyAction('-', () => {
         game.setLevel(game.levelId - 1);
         game.restart();
-    })
+    });
+    game.registerKeyAction('Enter', () => {
+        if (game.map.isWin()) game.nextLevel();
+    });
     game.listenKeyEvent();
     game.start();
 }

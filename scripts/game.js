@@ -66,6 +66,14 @@ class Game {
     }
 
     /**
+     * 进入下一个关卡
+     */
+    nextLevel() {
+        this.setLevel(this.levelId + 1);
+        this.restart();
+    }
+
+    /**
      * 开始一局游戏
      */
     start() {
