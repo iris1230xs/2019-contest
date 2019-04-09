@@ -10,12 +10,26 @@ class GameMap {
         this.grids = new Array(rowCnt);
         for (let i = 0; i < this.grids.length; i++) {
             this.grids[i] = new Array(colCnt);
+        }
+        this.clear();
+    }
+
+    clear() {
+        for (let i = 0; i < this.grids.length; i++) {
             for (let j = 0; j < this.grids[i].length; j++) {
-                // Each grid has two layers, background and game obj
                 this.grids[i][j] = [Background.BLANK, null]
             }
         }
         this.goals = [];
+        this.walls = {};
+        for (let i = 0; i < colCnt; i++) {
+            this.walls[hashCode(-1, i)] = true
+            this.walls[hashCode(rowCnt, i)] = true
+        }
+        for (let i = 0; i < rowCnt; i++) {
+            this.walls[hashCode(i, -1)] = true;
+            this.walls[hashCode(i, colCnt)] = true;
+        }
         this.boxCnt = 0;
     }
 
@@ -29,6 +43,30 @@ class GameMap {
         return true;
     }
 
+    set(row, col, val) {
+        switch (val) {
+            case Background.FLOOR:
+                this.setFloor(row, col);
+                break;
+            case Background.WALL:
+                this.setWall(row, col);
+                break;
+            case Background.GOAL:
+                this.setGoal(row, col);
+                break;
+            default:
+                break;
+        }
+    }
+
+    setWall(row, col) {
+        const grid = this.grids[row][col];
+        if (grid[0] === Background.WALL) return false;
+        grid[0] = Background.WALL;
+        this.walls[hashCode(row, col)] = true;
+        return true;
+    }
+
     setGoal(row, col) {
         const grid = this.grids[row][col];
         if (grid[0] === Background.GOAL) return false;
@@ -37,16 +75,36 @@ class GameMap {
         return true;
     }
 
+    setFloor(row, col) {
+        const grid = this.grids[row][col];
+        if (grid[0] === Background.FLOOR) return false;
+        grid[0] = Background.FLOOR;
+        return true;
+    }
+
+    checkUnmovable(object) {
+        const up = this.walls[hashCode(object.row - 1, object.col)];
+        const down = this.walls[hashCode(object.row + 1, object.col)];
+        const left = this.walls[hashCode(object.row, object.col - 1)];
+        const right = this.walls[hashCode(object.row, object.col + 1)];
+        if ((up && right) || (right && down) || (down && left) || (left && up)) {
+            this.walls[hashCode(object.row, object.col)] = true;
+            return true;
+        }
+        return false;
+    }
+
     move(object, drow, dcol) {
         const nrow = object.row + drow;
         const ncol = object.col + dcol;
-        if (nrow < 0 || rowCnt <= nrow || ncol < 0 || colCnt <= ncol) return false;
+        if (this.walls[hashCode(nrow, ncol)] === true) return false;
         const grid = this.grids[nrow][ncol];
-        if (grid[0] === Background.WALL) return false;
         if (grid[1] !== null) return false;
         this.grids[object.row][object.col][1] = null;
         grid[1] = object;
         object.move(drow, dcol);
+        const isWall = this.checkUnmovable(object);
+        if (isWall && object.type === 'box') this.boxCnt--;
         return true;
     }
 
@@ -69,9 +127,8 @@ class GameMap {
     push(object, drow, dcol) {
         const nrow = object.row + drow;
         const ncol = object.col + dcol;
-        if (nrow < 0 || rowCnt <= nrow || ncol < 0 || colCnt <= ncol) return false;
+        if (this.walls[hashCode(nrow, ncol)] === true) return false;
         const grid = this.grids[nrow][ncol];
-        if (grid[0] === Background.WALL) return false;
         if (grid[1] !== null && !this.move(grid[1], drow, dcol)) return false;
         this.grids[object.row][object.col][1] = null;
         grid[1] = object;
