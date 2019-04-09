@@ -8,6 +8,9 @@ const sokoban = document.querySelector('canvas#sokoban');
  */
 const gameContext = sokoban.getContext('2d');
 
+const imgGameOver = document.querySelector('img#lose');
+const imgYouWin = document.querySelector('img#win');
+
 // Width and height in pixels of a single grid
 const gridWidth = 50;
 const gridHeight = 50;

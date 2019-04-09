@@ -103,10 +103,12 @@ class Game {
         if (this.map.isLose()) {
             console.error('You lose!');
             clearInterval(this.intervalId);
+            gameContext.drawImage(imgGameOver, 100, 100, 200, 200);
             this.intervalId = setInterval(this.doActions.bind(this), 1000 / 10);
         } else if (this.map.isWin()) {
             console.log('You win!');
             clearInterval(this.intervalId);
+            gameContext.drawImage(imgYouWin, 100, 100, 200, 200);
             this.intervalId = setInterval(this.doActions.bind(this), 1000 / 10);
         }
     }
