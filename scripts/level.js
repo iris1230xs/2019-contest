@@ -7,7 +7,7 @@ const intToMap = Object.freeze({
     2: Background.WALL,
     4: Background.GOAL,
     8: 'box'
-});
+}); // For example, 1 -> FLOOR, 9 -> box on FLOOR, 12 -> box on GOAL
 
 /**
  * 低3bit表示背景类型
@@ -47,7 +47,7 @@ const gameLevels = [
         ],
         initRow: 5,
         initCol: 3,
-        diff: [20, 10, 5]
+        diff: [200, 100, 50]
     },
     {
         layout: [
@@ -61,7 +61,7 @@ const gameLevels = [
         ],
         initRow: 2,
         initCol: 1,
-        diff: [20, 10, 5]
+        diff: [200, 100, 50]
     },
     {
         layout: [
@@ -76,7 +76,7 @@ const gameLevels = [
         ],
         initRow: 3,
         initCol: 7,
-        diff: [20, 10, 5]
+        diff: [200, 100, 50]
     },
     {
         layout: [
