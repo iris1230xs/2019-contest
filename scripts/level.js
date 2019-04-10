@@ -9,6 +9,9 @@ const intToMap = Object.freeze({
     8: 'box'
 });
 
+/**
+ * 低3bit表示背景类型
+ */
 const layoutMask = 0x7;
 
 /**
@@ -25,6 +28,19 @@ const gameLevels = [
         ],
         initRow: 1, // The init row number of the player
         initCol: 1 // Init col number
+    },
+    {
+        layout: [
+            [0, 2, 2, 2, 2, 2, 0, 0],
+            [0, 2, 1, 1, 1, 2, 2, 0],
+            [2, 2, 1, 1, 1, 4, 2, 2],
+            [2, 1, 9, 9, 1, 1, 1, 2],
+            [2, 1, 1, 1, 1, 4, 1, 2],
+            [2, 2, 1, 1, 1, 2, 2, 2],
+            [0, 2, 2, 2, 2, 2, 0, 0]
+        ],
+        initRow: 5,
+        initCol: 3
     },
     {
         layout: [
@@ -52,5 +68,19 @@ const gameLevels = [
         ],
         initRow: 3,
         initCol: 7
+    },
+    {
+        layout: [
+            [0, 0, 0, 2,  2,  2, 2, 2, 0],
+            [0, 0, 0, 2,  1,  1, 1, 2, 0],
+            [0, 0, 0, 2,  4,  1, 9, 2, 0],
+            [0, 0, 0, 2,  1,  9, 1, 2, 0],
+            [2, 2, 2, 2,  4,  4, 1, 2, 2],
+            [2, 1, 9, 1, 12, 12, 1, 1, 2],
+            [2, 1, 4, 1,  1,  1, 9, 1, 2],
+            [2, 2, 2, 2,  2,  2, 2, 2, 2]
+        ],
+        initRow: 6,
+        initCol: 5
     }
 ];

@@ -66,10 +66,10 @@ class Game {
     }
 
     /**
-     * 进入下一个关卡
+     * 进入指定关卡
      */
-    nextLevel() {
-        this.setLevel(this.levelId + 1);
+    goToLevel(id) {
+        this.setLevel(id);
         this.restart();
     }
 
@@ -121,7 +121,8 @@ class Game {
     win() {
         clearInterval(this.intervalId);
         setTimeout(() => {
-            gameContext.drawImage(imgYouWin, 250, 200, 300, 200);
+            const image = document.querySelector('img#win');
+            gameContext.drawImage(image, 250, 200, 300, 200);
         }, 0);
         this.intervalId = setInterval(this.doActions.bind(this), 1000 / 10);
     }
@@ -132,7 +133,8 @@ class Game {
     lose() {
         clearInterval(this.intervalId);
         setTimeout(() => {
-            gameContext.drawImage(imgGameOver, 250, 200, 300, 200);
+            const image = document.querySelector('img#lose');
+            gameContext.drawImage(image, 250, 200, 300, 200);
         }, 0);
         this.intervalId = setInterval(this.doActions.bind(this), 1000 / 10);
     }
