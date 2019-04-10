@@ -47,7 +47,7 @@ const gameLevels = [
         ],
         initRow: 5,
         initCol: 3,
-        diff: [200, 100, 50]
+        diff: [50, 30, 20]
     },
     {
         layout: [
@@ -61,7 +61,7 @@ const gameLevels = [
         ],
         initRow: 2,
         initCol: 1,
-        diff: [200, 100, 50]
+        diff: [60, 45, 33]
     },
     {
         layout: [
@@ -76,7 +76,7 @@ const gameLevels = [
         ],
         initRow: 3,
         initCol: 7,
-        diff: [200, 100, 50]
+        diff: [150, 100, 79]
     },
     {
         layout: [
