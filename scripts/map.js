@@ -86,59 +86,21 @@ class GameMap {
      * @returns {boolean} 是否设置成功
      */
     setBackground(row, col, val) {
+        const grid = this.grids[row][col];
+        if (grid[Layer.BG] === val) return false;
+        grid[Layer.BG] = val;
         switch (val) {
             case Background.FLOOR:
-                this.setFloor(row, col);
                 break;
             case Background.WALL:
-                this.setWall(row, col);
+                this.walls[hashCode(row, col)] = true;
                 break;
             case Background.GOAL:
-                this.setGoal(row, col);
+                this.goals.push({row: row, col: col});
                 break;
             default:
                 break;
         }
-    }
-
-    /**
-     * 将地图指定位置设置为墙
-     * @param {number} row 行号
-     * @param {number} col 列号
-     * @returns {boolean} 是否设置成功
-     */
-    setWall(row, col) {
-        const grid = this.grids[row][col];
-        if (grid[Layer.BG] === Background.WALL) return false;
-        grid[Layer.BG] = Background.WALL;
-        this.walls[hashCode(row, col)] = true;
-        return true;
-    }
-
-    /**
-     * 将地图指定位置设置为终点
-     * @param {number} row 行号
-     * @param {number} col 列号
-     * @returns {boolean} 是否设置成功
-     */
-    setGoal(row, col) {
-        const grid = this.grids[row][col];
-        if (grid[Layer.BG] === Background.GOAL) return false;
-        grid[Layer.BG] = Background.GOAL;
-        this.goals.push({row: row, col: col});
-        return true;
-    }
-
-    /**
-     * 将地图指定位置设置为地面
-     * @param {number} row 行号
-     * @param {number} col 列号
-     * @returns {boolean} 是否设置成功
-     */
-    setFloor(row, col) {
-        const grid = this.grids[row][col];
-        if (grid[Layer.BG] === Background.FLOOR) return false;
-        grid[Layer.BG] = Background.FLOOR;
         return true;
     }
 
@@ -179,42 +141,6 @@ class GameMap {
         const isWall = this.checkUnmovable(object);
         if (isWall && object.type === 'box' && grid[Layer.BG] !== Background.GOAL) this.boxCnt--;
         return true;
-    }
-
-    /**
-     * 将指定物体向上移动
-     * @param {GameObject} object 物体
-     * @returns {boolean} 是否移动成功
-     */
-    moveUp(object) {
-        return this.move(object, -1, 0);
-    }
-
-    /**
-     * 将指定物体向下移动
-     * @param {GameObject} object 物体
-     * @returns {boolean} 是否移动成功
-     */
-    moveDown(object) {
-        return this.move(object, 1, 0);
-    }
-
-    /**
-     * 将指定物体向左移动
-     * @param {GameObject} object 物体
-     * @returns {boolean} 是否移动成功
-     */
-    moveLeft(object) {
-        return this.move(object, 0, -1);
-    }
-
-    /**
-     * 将指定物体向右移动
-     * @param {GameObject} object 物体
-     * @returns {boolean} 是否移动成功
-     */
-    moveRight(object) {
-        return this.move(object, 0, 1);
     }
 
     /**

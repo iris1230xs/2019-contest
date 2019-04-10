@@ -23,7 +23,7 @@ function main() {
     const levelSel = initLevelSelector();
     levelSel.onchange = () => game.goToLevel(levelSel.value);
 
-    const diffSel = initDifficultySelector();
+    const diffSel = document.querySelector('select#diff');
     diffSel.onchange = () => {
         game.setDifficulty(diffSel.value);
         game.restart();
@@ -46,21 +46,6 @@ function initLevelSelector() {
         const option = new Option('level ' + (i + 1), i);
         selector.appendChild(option);
     }
-    return selector;
-}
-
-/**
- * 
- * @returns {Element} 难度选择下拉菜单
- */
-function initDifficultySelector() {
-    const selector = document.querySelector('select#diff');
-    const easy = new Option('easy', 0);
-    selector.appendChild(easy);
-    const medium = new Option('medium', 1);
-    selector.appendChild(medium);
-    const hard = new Option('hard', 2);
-    selector.appendChild(hard);
     return selector;
 }
 

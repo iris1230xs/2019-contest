@@ -74,7 +74,7 @@ class Game {
             }
         }
         this.map.putObject(this.player, level.initRow + rowPad, level.initCol + colPad);
-        this.map.stepLeft = level.diff[this.difficulty];
+        this.map.stepLeft = level.diff[this.difficulty]; // Reset step
         return true;
     }
 
@@ -122,7 +122,7 @@ class Game {
      */
     checkState() {
         if (this.map.isWin()) {
-            this.win();
+            this.win(); // Check win state first
         } else if (this.map.isLose()) {
             this.lose();
         }

@@ -91,6 +91,6 @@ const gameLevels = [
         ],
         initRow: 6,
         initCol: 5,
-        diff: [20, 10, 5]
+        diff: [150, 100, 61]
     }
 ];
