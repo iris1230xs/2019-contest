@@ -15,6 +15,11 @@ const intToMap = Object.freeze({
 const layoutMask = 0x7;
 
 /**
+ * 三个难度等级，easy，medium，hard
+ */
+const diffCnt = 3;
+
+/**
  * 所有游戏关卡
  */
 const gameLevels = [
@@ -27,7 +32,8 @@ const gameLevels = [
             [2, 2, 2, 2, 2]
         ],
         initRow: 1, // The init row number of the player
-        initCol: 1 // Init col number
+        initCol: 1, // Init col number
+        diff: [15, 10, 7] // Step limit of the level
     },
     {
         layout: [
@@ -40,7 +46,8 @@ const gameLevels = [
             [0, 2, 2, 2, 2, 2, 0, 0]
         ],
         initRow: 5,
-        initCol: 3
+        initCol: 3,
+        diff: [20, 10, 5]
     },
     {
         layout: [
@@ -53,7 +60,8 @@ const gameLevels = [
             [0, 0, 2, 2, 2, 2, 2]
         ],
         initRow: 2,
-        initCol: 1
+        initCol: 1,
+        diff: [20, 10, 5]
     },
     {
         layout: [
@@ -67,7 +75,8 @@ const gameLevels = [
             [2, 2, 2, 2, 2, 2, 2, 2, 2, 0]
         ],
         initRow: 3,
-        initCol: 7
+        initCol: 7,
+        diff: [20, 10, 5]
     },
     {
         layout: [
@@ -81,6 +90,7 @@ const gameLevels = [
             [2, 2, 2, 2,  2,  2, 2, 2, 2]
         ],
         initRow: 6,
-        initCol: 5
+        initCol: 5,
+        diff: [20, 10, 5]
     }
 ];

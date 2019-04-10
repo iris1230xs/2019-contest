@@ -6,6 +6,7 @@
  * @property {GameMap} map 游戏地图
  * @property {number} intervalId interval循环的辨识id
  * @property {number} levelId 当前关卡编号
+ * @property {number} difficulty 当前关卡难度
  */
 class Game {
     /**
@@ -18,6 +19,7 @@ class Game {
         this.map = new GameMap();
         this.intervalId = -1;
         this.levelId = -1;
+        this.difficulty = -1;
     }
 
     /**
@@ -31,8 +33,18 @@ class Game {
     }
 
     /**
+     * 设置难度等级
+     * @param {number} diff 难度等级
+     */
+    setDifficulty(diff) {
+        this.difficulty = diff % diffCnt;
+        if (this.difficulty < 0)
+            this.difficulty = (this.difficulty + diffCnt) % diffCnt;
+    }
+
+    /**
      * 设置玩家
-     * @param {GameObject} player 玩家
+     * @param {Player} player 玩家
      */
     setPlayer(player) {
         this.player = player;
@@ -62,6 +74,7 @@ class Game {
             }
         }
         this.map.putObject(this.player, level.initRow + rowPad, level.initCol + colPad);
+        this.map.stepLeft = level.diff[this.difficulty];
         return true;
     }
 
@@ -108,10 +121,10 @@ class Game {
      * 检查游戏的输赢状态
      */
     checkState() {
-        if (this.map.isLose()) {
-            this.lose();
-        } else if (this.map.isWin()) {
+        if (this.map.isWin()) {
             this.win();
+        } else if (this.map.isLose()) {
+            this.lose();
         }
     }
 

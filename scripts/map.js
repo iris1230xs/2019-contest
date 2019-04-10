@@ -22,6 +22,7 @@ const Layer = Object.freeze({
  * @property {Array} goals 储存所有终点的坐标，以便检查胜利状态
  * @property {Object} walls 储存所有无法移动的格子的坐标，以便碰撞和状态的检测
  * @property {number} boxCnt 剩余仍然可以移动的箱子数量
+ * @property {number} stepLeft 玩家可以移动的步数
  */
 class GameMap {
     /**
@@ -57,6 +58,7 @@ class GameMap {
             this.walls[hashCode(i, colCnt)] = true;
         }
         this.boxCnt = 0;
+        this.stepLeft = 0;
     }
 
     /**
@@ -231,6 +233,7 @@ class GameMap {
         this.grids[object.row][object.col][Layer.OBJ] = null;
         grid[Layer.OBJ] = object;
         object.move(drow, dcol);
+        this.stepLeft--;
         return true;
     }
 
@@ -288,6 +291,7 @@ class GameMap {
      * @returns {boolean} 是否失败
      */
     isLose() {
+        if (this.stepLeft === 0) return true;
         if (this.boxCnt < this.goals.length) return true;
         return false;
     }
@@ -303,6 +307,7 @@ class GameMap {
                 this.drawGrid(col, j * gridWidth, i * gridHeight);
             }
         }
+        this.drawStepLeft();
     }
 
     /**
@@ -322,6 +327,16 @@ class GameMap {
         if (grid[Layer.OBJ].type !== 'box' || grid[Layer.BG] !== Background.GOAL) return;
         gameContext.fillStyle = 'rgba(0, 200, 0, 0.5)';
         gameContext.fillRect(x, y, grid[Layer.OBJ].width, grid[Layer.OBJ].height);
+        gameContext.fillStyle = 'black';
+    }
+
+    /**
+     * 绘制剩余步数
+     */
+    drawStepLeft() {
+        gameContext.fillStyle = 'white';
+        gameContext.font = '30px monospace';
+        gameContext.fillText('Steps left: ' + this.stepLeft, 20, 40);
         gameContext.fillStyle = 'black';
     }
 }

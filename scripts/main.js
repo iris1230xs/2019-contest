@@ -12,6 +12,7 @@ function main() {
     game.setPlayer(player);
 
     game.setLevel(0);
+    game.setDifficulty(0);
     game.loadLevel();
 
     game.registerKeyAction('r', () => game.restart());
@@ -19,8 +20,14 @@ function main() {
     game.registerKeyAction('-', () => game.goToLevel(game.levelId - 1));
     game.registerKeyAction('Enter', () => game.map.isWin() && game.goToLevel(game.levelId + 1));
 
-    const selector = initLevelSelector();
-    selector.onchange = () => game.goToLevel(selector.value);
+    const levelSel = initLevelSelector();
+    levelSel.onchange = () => game.goToLevel(levelSel.value);
+
+    const diffSel = initDifficultySelector();
+    diffSel.onchange = () => {
+        game.setDifficulty(diffSel.value);
+        game.restart();
+    };
 
     const reset = document.querySelector('button#reset');
     reset.onclick = () => game.restart();
@@ -39,6 +46,21 @@ function initLevelSelector() {
         const option = new Option('level ' + (i + 1), i);
         selector.appendChild(option);
     }
+    return selector;
+}
+
+/**
+ * 
+ * @returns {Element} 难度选择下拉菜单
+ */
+function initDifficultySelector() {
+    const selector = document.querySelector('select#diff');
+    const easy = new Option('easy', 0);
+    selector.appendChild(easy);
+    const medium = new Option('medium', 1);
+    selector.appendChild(medium);
+    const hard = new Option('hard', 2);
+    selector.appendChild(hard);
     return selector;
 }
 
