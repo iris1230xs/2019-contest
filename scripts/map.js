@@ -42,9 +42,15 @@ class GameMap {
      */
     clear() {
         // Fill whole map with blank
+        const layerCnt = Object.keys(Layer).length;
         for (let i = 0; i < this.grids.length; i++) {
             for (let j = 0; j < this.grids[i].length; j++) {
-                this.grids[i][j] = [Background.BLANK, null]
+                const grid = new Array(layerCnt);
+                grid[Layer.BG] = Background.BLANK;
+                for (let i = Layer.BG + 1; i < layerCnt; i++) {
+                    grid[i] = null;
+                }
+                this.grids[i][j] = grid;
             }
         }
         this.objects = [];
