@@ -4,7 +4,8 @@
  * @property {Object} actions 按键按下后的回调函数
  * @property {GameObject} player 玩家
  * @property {GameMap} map 游戏地图
- * @property {number} intervalId interval循环的辨识id
+ * @property {number} logicInterval 逻辑循环的辨识id
+ * @property {number} refreshInterval 刷新循环的辨识id
  * @property {number} levelId 当前关卡编号
  * @property {number} difficulty 当前关卡难度
  */
@@ -17,7 +18,8 @@ class Game {
         this.actions = {};
         this.player = null;
         this.map = new GameMap();
-        this.intervalId = -1;
+        this.logicInterval = -1;
+        this.refreshInterval = -1;
         this.levelId = -1;
         this.difficulty = -1;
     }
@@ -91,14 +93,16 @@ class Game {
      */
     start() {
         // Should bind context here, otherwise the function'll lose context!
-        this.intervalId = setInterval(this.doLoopOnce.bind(this), 1000 / 10);
+        this.logicInterval = setInterval(this.doLogicOnce.bind(this), MSPF * spriteFrame);
+        this.refreshInterval = setInterval(this.doRefreshOnce.bind(this), MSPF);
     }
 
     /**
      * 重新开始一局游戏
      */
     restart() {
-        clearInterval(this.intervalId);
+        clearInterval(this.logicInterval);
+        clearInterval(this.refreshInterval);
         this.loadLevel();
         this.start();
     }
@@ -132,24 +136,26 @@ class Game {
      * 游戏胜利
      */
     win() {
-        clearInterval(this.intervalId);
+        clearInterval(this.logicInterval);
         setTimeout(() => {
             const image = document.querySelector('img#win');
             gameContext.drawImage(image, 250, 200, 300, 200);
-        }, 0);
-        this.intervalId = setInterval(this.doActions.bind(this), 1000 / 10);
+        }, MSPF);
+        clearInterval(this.refreshInterval);
+        this.logicInterval = setInterval(this.doActions.bind(this), MSPF * spriteFrame);
     }
 
     /**
      * 游戏失败
      */
     lose() {
-        clearInterval(this.intervalId);
+        clearInterval(this.logicInterval);
         setTimeout(() => {
             const image = document.querySelector('img#lose');
             gameContext.drawImage(image, 250, 200, 300, 200);
-        }, 0);
-        this.intervalId = setInterval(this.doActions.bind(this), 1000 / 10);
+        }, MSPF);
+        clearInterval(this.refreshInterval);
+        this.logicInterval = setInterval(this.doActions.bind(this), MSPF * spriteFrame);
     }
 
     /**
@@ -170,11 +176,17 @@ class Game {
     }
 
     /**
-     * 执行一轮循环
+     * 执行一轮游戏逻辑的判断
      */
-    doLoopOnce() {
+    doLogicOnce() {
         this.checkState();
         this.doActions();
+    }
+
+    /**
+     * 刷新一次屏幕
+     */
+    doRefreshOnce() {
         this.clearCanvas();
         this.drawCanvas();
     }

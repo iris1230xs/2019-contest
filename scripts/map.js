@@ -19,6 +19,7 @@ const Layer = Object.freeze({
 /**
  * 游戏地图类，负责物体位置的管理、碰撞检测和游戏状态的检测
  * @property {Array} grids 负责地图所有格子状态的储存
+ * @property {Array} objects 存储所有需要绘制的物体
  * @property {Array} goals 储存所有终点的坐标，以便检查胜利状态
  * @property {Object} walls 储存所有无法移动的格子的坐标，以便碰撞和状态的检测
  * @property {number} boxCnt 剩余仍然可以移动的箱子数量
@@ -46,6 +47,7 @@ class GameMap {
                 this.grids[i][j] = [Background.BLANK, null]
             }
         }
+        this.objects = [];
         this.goals = [];
         this.walls = {};
         // Treat the edge of the map as a wall
@@ -74,6 +76,9 @@ class GameMap {
         grid[Layer.OBJ] = object;
         object.row = row;
         object.col = col;
+        object.x = col * gridWidth;
+        object.y = row * gridHeight;
+        this.objects.push(object);
         if (object.type === 'box') this.boxCnt++;
         return true;
     }
@@ -226,34 +231,32 @@ class GameMap {
      * 绘制整个地图
      */
     draw() {
+        // Draw background first
         for (let i = 0; i < this.grids.length; i++) {
             const row = this.grids[i];
             for (let j = 0; j < row.length; j++) {
-                const col = row[j];
-                this.drawGrid(col, j * gridWidth, i * gridHeight);
+                const grid = row[j];
+                const x = j * gridWidth, y = i * gridHeight;
+                if (grid[Layer.BG] === Background.BLANK) {
+                    gameContext.fillRect(x, y, gridWidth, gridHeight);
+                } else {
+                    gameContext.drawImage(grid[Layer.BG], x, y, gridWidth, gridHeight);
+                }
             }
         }
+        // Then draw objects
+        this.objects.forEach(object => {
+            object.draw();
+            // Add green mask for the box on Background.GOAL
+            if (object.type !== 'box') return;
+            if (object.x !== object.col * gridWidth) return;
+            if (this.grids[object.row][object.col][Layer.BG] !== Background.GOAL) return;
+            gameContext.fillStyle = 'rgba(0, 200, 0, 0.5)';
+            gameContext.fillRect(object.x, object.y, object.width, object.height);
+            gameContext.fillStyle = backgroundStyle;
+        });
+        // At last, draw steps left
         this.drawStepLeft();
-    }
-
-    /**
-     * 在给定的坐标上绘制某个格子
-     * @param {Array} grid 格子
-     * @param {number} x 横坐标
-     * @param {number} y 纵坐标
-     */
-    drawGrid(grid, x, y) {
-        // Draw background first
-        if (grid[Layer.BG] === Background.BLANK) gameContext.fillRect(x, y, gridWidth, gridHeight);
-        else gameContext.drawImage(grid[Layer.BG], x, y, gridWidth, gridHeight);
-        // Draw player or box
-        if (grid[Layer.OBJ] === null) return;
-        grid[Layer.OBJ].draw();
-        // If reaches goal, cover the box with green mask
-        if (grid[Layer.OBJ].type !== 'box' || grid[Layer.BG] !== Background.GOAL) return;
-        gameContext.fillStyle = 'rgba(0, 200, 0, 0.5)';
-        gameContext.fillRect(x, y, grid[Layer.OBJ].width, grid[Layer.OBJ].height);
-        gameContext.fillStyle = 'black';
     }
 
     /**
@@ -263,6 +266,6 @@ class GameMap {
         gameContext.fillStyle = 'white';
         gameContext.font = '30px monospace';
         gameContext.fillText('Steps left: ' + this.stepLeft, 20, 40);
-        gameContext.fillStyle = 'black';
+        gameContext.fillStyle = backgroundStyle;
     }
 }

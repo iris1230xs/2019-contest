@@ -14,6 +14,8 @@ class GameObject {
         this.type = type; // 'player' or 'box'
         this.row = row;
         this.col = col;
+        this.x = col * gridWidth;
+        this.y = row * gridHeight;
         this.width = width;
         this.height = height;
         this.image = document.querySelector('img#' + type);
@@ -24,15 +26,22 @@ class GameObject {
      * @param {number} drow 行号的偏移量
      * @param {number} dcol 列号的偏移量
      */
-    move(drow, dcol) {
+    async move(drow, dcol) {
         this.row += drow;
         this.col += dcol;
+        for (let i = 0; i < spriteFrame - 1; i++) {
+            this.x += dcol / spriteFrame * gridWidth;
+            this.y += drow / spriteFrame * gridHeight;
+            await timer(MSPF / spriteFrame);
+        }
+        this.x = this.col * gridWidth;
+        this.y = this.row * gridHeight;
     }
 
     /**
      * 在canvas中绘制物体
      */
     draw() {
-        gameContext.drawImage(this.image, this.col * gridWidth, this.row * gridHeight, this.width, this.height);
+        gameContext.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
 }
