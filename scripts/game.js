@@ -126,33 +126,25 @@ class Game {
      */
     checkState() {
         if (this.map.isWin()) {
-            this.win(); // Check win state first
+            this.end('win'); // Check win state first
         } else if (this.map.isLose()) {
-            this.lose();
+            this.end('lose');
         }
     }
 
     /**
-     * 游戏胜利
+     * 以指定的游戏状态结束游戏
+     * @param {string} state 游戏状态
      */
-    win() {
+    end(state) {
         clearInterval(this.logicInterval);
+        const width = Math.floor(sokoban.width * 3 / 8);
+        const height = Math.floor(sokoban.height / 3);
+        const x = Math.floor((sokoban.width - width) / 2);
+        const y = Math.floor((sokoban.height - height) / 2);
         setTimeout(() => {
-            const image = document.querySelector('img#win');
-            gameContext.drawImage(image, 250, 200, 300, 200);
-        }, MSPF);
-        clearInterval(this.refreshInterval);
-        this.logicInterval = setInterval(this.doActions.bind(this), MSPF * spriteFrame);
-    }
-
-    /**
-     * 游戏失败
-     */
-    lose() {
-        clearInterval(this.logicInterval);
-        setTimeout(() => {
-            const image = document.querySelector('img#lose');
-            gameContext.drawImage(image, 250, 200, 300, 200);
+            const image = document.querySelector(`img#${state}`);
+            gameContext.drawImage(image, x, y, width, height);
         }, MSPF);
         clearInterval(this.refreshInterval);
         this.logicInterval = setInterval(this.doActions.bind(this), MSPF * spriteFrame);

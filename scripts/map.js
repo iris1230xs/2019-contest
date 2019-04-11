@@ -271,7 +271,7 @@ class GameMap {
     drawStepLeft() {
         gameContext.fillStyle = 'white';
         gameContext.font = '30px monospace';
-        gameContext.fillText('Steps left: ' + this.stepLeft, 20, 40);
+        gameContext.fillText(`Steps left: ${this.stepLeft}`, Math.floor(gridWidth / 2), gridHeight);
         gameContext.fillStyle = backgroundStyle;
     }
 }

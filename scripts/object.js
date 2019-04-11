@@ -18,7 +18,7 @@ class GameObject {
         this.y = row * gridHeight;
         this.width = width;
         this.height = height;
-        this.image = document.querySelector('img#' + type);
+        this.image = document.querySelector(`img#${type}`);
     }
 
     /**

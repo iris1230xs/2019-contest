@@ -8,13 +8,13 @@ const sokoban = document.querySelector('canvas#sokoban');
  */
 const gameContext = sokoban.getContext('2d');
 
-// Width and height in pixels of a single grid
-const gridWidth = 50;
-const gridHeight = 50;
-
 // The total count of cols and rows of the game map
-const colCnt = Math.floor(sokoban.width / gridWidth);
-const rowCnt = Math.floor(sokoban.height / gridHeight);
+const colCnt = 16;
+const rowCnt = 12;
+
+// Width and height in pixels of a single grid
+const gridWidth = Math.floor(sokoban.width / colCnt);
+const gridHeight = Math.floor(sokoban.height / rowCnt);
 
 /**
  * 每帧持续的毫秒数，ms per frame

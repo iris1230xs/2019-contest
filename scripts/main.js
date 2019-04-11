@@ -43,7 +43,7 @@ function main() {
 function initLevelSelector() {
     const selector = document.querySelector('select#level');
     for (let i = 0; i < gameLevels.length; i++) {
-        const option = new Option('level ' + (i + 1), i);
+        const option = new Option(`level ${i + 1}`, i);
         selector.appendChild(option);
     }
     return selector;
